@@ -1,0 +1,31 @@
+<div class="container">
+  <h1>Hola este es mi proyecto numero 156 </h1>
+<h2>{{welcome}}</h2>
+<ul>
+  <li *ngFor="let tasks of task(), index as i " >{{i}} {{ tasks}}</li>
+
+</ul>
+
+<hr>
+<h2>{{'Hola'.repeat(3)}}</h2>
+<p>la suma de 3 + 3 es {{3+3}}</p>
+<p>Hola soy {{name()}} y mi edad es {{age}}</p>
+<hr>
+<img [src]="img" alt="">
+<input type="text" [value]="name">
+<button  (click)="ClickHandler()">click me</button>
+<button  (dblclick)="ClickHandler()">click me2</button>
+<hr>
+<p>(change)</p>
+<input type="number" name="" id="" (change)="ChangeHandler($event)">
+<p>(keydown)</p>
+<input type="text" name="" id="" (keyup)=" keydownHandler($event)">
+<p>{{ name()}}</p>
+
+<input type="text" (keydown.shift.t)="combinacion()">
+<hr>
+<h1>signals</h1>
+<input type="text" [value]="name()" (keydown)="ChangeHandler($event)">
+<p>{{name()}}</p>
+</div>
+

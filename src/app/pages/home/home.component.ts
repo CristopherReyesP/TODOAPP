@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, computed, effect } from '@angular/core';
 import { FormControl, ReactiveFormsModule,  Validators} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -21,24 +21,38 @@ export class HomeComponent {
     ]
   });
 
-  task = signal<Task[]>([
-    {
-      id: Date.now(),
-      title: 'crear proyecto',
-      completed: true
-    },
-    {
-      id: Date.now(),
-      title: 'crear componente',
-      completed: false
-    },
-    {
-      id: Date.now(),
-      title: 'subir proyecto',
-      completed: false
-    },
-  ]);
+  task = signal<Task[]>([]);
 
+  filter = signal<'all'|'pending'|'completed' >('all');
+  taskByFilter = computed(()=>{
+    const filter = this.filter();
+    const tasks = this.task();
+    if(filter === 'pending'){
+      return tasks.filter(task => !task.completed);
+    }
+    if(filter === 'completed'){
+      return tasks.filter(task => task.completed);
+    }
+    return tasks;
+  } )
+
+  constructor(){
+    effect(()=>{
+      const tasks = this.task();
+      console.log('run effect', tasks);
+
+      localStorage.setItem('tasks', JSON.stringify(tasks))
+    })
+  }
+
+  ngOnInit(){
+
+    const storage = localStorage.getItem('tasks');
+    if(storage){
+      const tasks = JSON.parse(storage);
+      this.task.set(tasks);
+    }
+  }
 
   changeHandler(){
       if(this.newTaskCtrl.valid){
@@ -60,14 +74,14 @@ export class HomeComponent {
       this.task.update((tasks)=>[...tasks, newTask]);
   }
 
-  deleteTask(index: number){
-    this.task.update((tasks)=> tasks.filter((task, position)=> position !== index));
+  deleteTask(id: number){
+    this.task.update((tasks)=> tasks.filter((task)=> task.id !== id));
   }
 
-  updateTask(index: number){
+  updateTask(id: number){
     this.task.update((tasks)=>{
-      return tasks.map((task, position)=>{
-      if(position === index){
+      return tasks.map((task)=>{
+      if(task.id === id){
         return {
           ...task,
           completed: !task.completed
@@ -77,10 +91,10 @@ export class HomeComponent {
       })
     })
   }
-  updateTaskEditingMode(index: number){
+  updateTaskEditingMode(id: number){
     this.task.update((tasks)=>{
-      return tasks.map((task, position)=>{
-      if(position === index){
+      return tasks.map((task)=>{
+      if(task.id === id){
         return {
           ...task,
           editing: true
@@ -94,12 +108,12 @@ export class HomeComponent {
     })
   }
 
-  updateTaskText(index: number, event: Event){
+  updateTaskText(id: number, event: Event){
     const input= event.target as HTMLInputElement;
 
     this.task.update((tasks)=>{
-      return tasks.map((task, position)=>{
-      if(position === index){
+      return tasks.map((task)=>{
+      if(task.id === id){
         return {
           ...task,
           title: input.value,
@@ -108,5 +122,10 @@ export class HomeComponent {
         return task;
       })
     })
+  }
+
+  changeFilter(filter: 'all'|'pending'|'completed'){
+    this.filter.set(filter)
+
   }
 }

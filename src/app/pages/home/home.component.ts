@@ -1,4 +1,4 @@
-import { Component, signal, computed, effect } from '@angular/core';
+import { Component, signal, computed, effect, inject, Injector } from '@angular/core';
 import { FormControl, ReactiveFormsModule,  Validators} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -36,14 +36,7 @@ export class HomeComponent {
     return tasks;
   } )
 
-  constructor(){
-    effect(()=>{
-      const tasks = this.task();
-      console.log('run effect', tasks);
-
-      localStorage.setItem('tasks', JSON.stringify(tasks))
-    })
-  }
+injector= inject(Injector);
 
   ngOnInit(){
 
@@ -52,6 +45,17 @@ export class HomeComponent {
       const tasks = JSON.parse(storage);
       this.task.set(tasks);
     }
+    this.trackTasks();
+  }
+
+
+  trackTasks(){
+    effect(()=>{
+      const tasks = this.task();
+      console.log('run effect', tasks);
+
+      localStorage.setItem('tasks', JSON.stringify(tasks))
+    },{injector: this.injector});
   }
 
   changeHandler(){

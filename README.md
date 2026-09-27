@@ -1,27 +1,34 @@
-# Todoapp
+# TODOAPP
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.0.
+Angular to-do list with add/edit/delete/complete, filtering, and persistence to `localStorage`.
 
-## Development server
+> Learning project built in November 2023 while practicing Angular signals, reactive forms and browser storage. Kept public as part of my learning history.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Live: https://todoapp-48982.web.app/
 
-## Code scaffolding
+## What it does
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+`HomeComponent` manages a list of tasks as an Angular `signal`. Tasks can be added (via a reactive `FormControl` with a required validator), marked complete/incomplete, edited inline, and deleted. A computed signal (`taskByFilter`) filters the list into all/pending/completed. An `effect()` writes the task list to `localStorage` on every change, and `ngOnInit` reads it back on load so tasks survive a page refresh. There's a second route, `/labs`, used for separate experiments.
 
-## Build
+## Tech Stack
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+- Angular 17 (standalone components, signals, `computed`, `effect`)
+- Reactive Forms (`ReactiveFormsModule`)
+- TypeScript ~5.2
 
-## Running unit tests
+## Running Locally
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```
+npm install
+npm start        # ng serve, http://localhost:4200
+```
 
-## Running end-to-end tests
+- `npm run build` — production build via `ng build`
+- `npm test` — unit tests via Karma/Jasmine
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## What I practiced
 
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+- Angular signals and `computed`/`effect` for derived state and side effects
+- Reactive forms with validation
+- Persisting state to `localStorage`
+- CRUD operations (add, edit, toggle-complete, delete) on client-side state
